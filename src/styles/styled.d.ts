@@ -7,6 +7,7 @@ declare module "styled-components" {
   // 1. 인터페이스 지정
   export interface 인테페이스명지정 {
     속성1: 타입지정;
+    속성2: 타입지정;
   }
   // 2. 타입속성지정
   // export type // 타입~~~지정지정해~
