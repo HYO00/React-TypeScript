@@ -24,9 +24,10 @@ const useGetData = (url: GetData) => {
     const fetchData = async () => {
       // console.log("fetch");
       try {
+        setIsLoading(true);
         axios(url).then((res) => {
           setResponse(res.data.data);
-          setIsLoading(!isLoading);
+          setIsLoading(false);
         });
       } catch (err) {
         console.log(err);

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import getData from "../api/getData";
 import { Response } from "api/getData";
 import PassengerListItem from "components/ListItem.tsx/PassengerListItem";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -18,7 +17,6 @@ interface ObserverProps {
 }
 
 const Passenger = () => {
-  //const [query, setQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const { loading, list } = useFetch(page);
   const loader = useRef(null);

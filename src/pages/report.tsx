@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import getData from "../api/getData";
 import styled from "styled-components";
 
@@ -18,16 +18,13 @@ const ReportBar = styled.div`
 const ReportBarBox = styled.div`
   display: flex;
   flex-direction: row;
-
   justify-content: flex-end;
-
   align-items: center;
 `;
 
 const ReportActiveBox = styled.div`
   display: flex;
   flex-direction: row;
-
   align-items: center;
 `;
 
@@ -61,10 +58,11 @@ const GraphBox = styled.div`
 `;
 
 const Svg = styled.svg``;
-const GraphDate = styled.div`
+
+const GraphDate = styled.div<{ top: number; left: number }>`
   position: absolute;
-  top: 102px;
-  left: 80.6667px;
+  top: ${(props) => props.top}px;
+  left: ${(props) => props.left}px;
 `;
 
 const GraphSpan = styled.span`
@@ -143,19 +141,22 @@ const Report: React.FC = () => {
   const intervalX: number = 556 / 6;
   const barValue: number = 100 / 15;
   const width: number = 160;
+
   const { response } = getData({
     url: "https://motionz-kr.github.io/playground/apis/report.json",
   });
 
   const cycle = response?.map((el) => el.cycle);
-  const period = response?.map((el) => el.period);
+
+  //barData
   const startDate: (string | number)[][] | undefined = response?.map((el) => {
     let arr = el.startDate.split("-");
     const white: number = 100 - Math.ceil(barValue * el.period);
     const black: number = 100 - white;
     return [white, black, el.period, `${arr[1]}/${arr[2]}`];
   });
-  //console.log(startDate);
+
+  //cycle line 좌표
   const cycleArr = cycle?.map((el, idx, ar) => {
     return [
       intervalX * (idx + 1),
@@ -165,11 +166,13 @@ const Report: React.FC = () => {
     ];
   });
 
-  const periodArr: number[][] | undefined = period?.map((el) => {
-    const white: number = 100 - Math.ceil(barValue * el);
-    const black: number = 100 - white;
-    return [white, black];
+  //cycle date 좌표
+  const cycleDate = cycle?.map((el, idx) => {
+    let top = 130;
+    let left = 80.6667;
+    return [top - el, left + idx * intervalX, el];
   });
+  //console.log(cycleData);
 
   return (
     <ReportContainer>
@@ -217,16 +220,15 @@ const Report: React.FC = () => {
                   );
                 })}
             </svg>
-
-            {cycle &&
-              cycle.map((el, idx) => {
-                return el >= 100 ? (
-                  <GraphDate key={idx.toString()}>
-                    <GraphSpan color={"#f00"}>{el}일</GraphSpan>
+            {cycleDate &&
+              cycleDate.map((el, idx) => {
+                return el[2] >= 100 ? (
+                  <GraphDate key={idx.toString()} top={el[0]} left={el[1]}>
+                    <GraphSpan color={"#f00"}>{el[2]}일</GraphSpan>
                   </GraphDate>
                 ) : (
-                  <GraphDate key={idx.toString()}>
-                    <GraphSpan>{el}일</GraphSpan>
+                  <GraphDate key={idx.toString()} top={el[0]} left={el[1]}>
+                    <GraphSpan>{el[2]}일</GraphSpan>
                   </GraphDate>
                 );
               })}
