@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import getData from "../api/getData";
 import styled from "styled-components";
-import { start } from "repl";
 
 const ReportContainer = styled.div`
   padding: 20px;
