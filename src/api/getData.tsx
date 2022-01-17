@@ -22,7 +22,7 @@ const useGetData = (url: GetData) => {
   // const ApiUrl = "https://motionz-kr.github.io/playground/apis/report.json";
   useEffect(() => {
     const fetchData = async () => {
-      console.log("fetch");
+      // console.log("fetch");
       try {
         axios(url).then((res) => {
           setResponse(res.data.data);
