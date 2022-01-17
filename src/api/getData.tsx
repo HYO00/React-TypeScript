@@ -1,15 +1,19 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
-interface GetData {
+export interface GetData {
   url: string;
 }
 
-interface Response {
+export interface Response {
   startDate: string;
   endDate: string;
   period: number;
   cycle: number;
+  name: string;
+  trips: number;
+  airline: Array<any>;
+  logo: string;
 }
 
 const useGetData = (url: GetData) => {

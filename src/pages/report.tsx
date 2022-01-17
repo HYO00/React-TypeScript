@@ -70,7 +70,7 @@ const GraphDate = styled.div`
 const GraphSpan = styled.span`
   font-weight: bold;
   font-size: 12px;
-  color: rgb(112, 112, 112);
+  color: ${(props) => props.color || "rgb(112, 112, 112)"};
 `;
 
 const BarContainer = styled.div`
@@ -91,13 +91,13 @@ const Bar = styled.div`
   width: 93px;
 `;
 
-const BarWhite = styled.div<{ height: number }>`
+const BarWhite = styled.div<{ height: number | string }>`
   height: ${(props) => props.height || 0}px;
   width: 30px;
   background-color: rgb(255, 255, 255);
 `;
 
-const BarBlack = styled.div<{ height: number }>`
+const BarBlack = styled.div<{ height: number | string }>`
   border-radius: 10px;
   height: ${(props) => props.height || 0}px;
   width: 30px;
@@ -141,7 +141,7 @@ const MonthSpan = styled.div`
 
 const Report: React.FC = () => {
   const intervalX: number = 556 / 6;
-  const barValue = 100 / 15;
+  const barValue: number = 100 / 15;
   const width: number = 160;
   const { response } = getData({
     url: "https://motionz-kr.github.io/playground/apis/report.json",
@@ -149,11 +149,13 @@ const Report: React.FC = () => {
 
   const cycle = response?.map((el) => el.cycle);
   const period = response?.map((el) => el.period);
-  const startDate = response?.map((el) => {
+  const startDate: (string | number)[][] | undefined = response?.map((el) => {
     let arr = el.startDate.split("-");
-    return [el.period, `${arr[1]}/${arr[2]}`];
+    const white: number = 100 - Math.ceil(barValue * el.period);
+    const black: number = 100 - white;
+    return [white, black, el.period, `${arr[1]}/${arr[2]}`];
   });
-  console.log("start", startDate);
+  //console.log(startDate);
   const cycleArr = cycle?.map((el, idx, ar) => {
     return [
       intervalX * (idx + 1),
@@ -163,14 +165,12 @@ const Report: React.FC = () => {
     ];
   });
 
-  const periodArr = period?.map((el, idx) => {
+  const periodArr: number[][] | undefined = period?.map((el) => {
     const white: number = 100 - Math.ceil(barValue * el);
     const black: number = 100 - white;
     return [white, black];
   });
-  //console.log(startDate?.concat(periodArr));
-  //cycleArr?.pop();
-  console.log("arr", cycleArr);
+
   return (
     <ReportContainer>
       <h2>User Report</h2>
@@ -217,31 +217,35 @@ const Report: React.FC = () => {
                   );
                 })}
             </svg>
-            <GraphDate>
-              {cycle &&
-                cycle.map((el, idx) => {
-                  return <GraphSpan key={idx}>{el}일</GraphSpan>;
-                })}
-            </GraphDate>
+
+            {cycle &&
+              cycle.map((el, idx) => {
+                return el >= 100 ? (
+                  <GraphDate key={idx.toString()}>
+                    <GraphSpan color={"#f00"}>{el}일</GraphSpan>
+                  </GraphDate>
+                ) : (
+                  <GraphDate key={idx.toString()}>
+                    <GraphSpan>{el}일</GraphSpan>
+                  </GraphDate>
+                );
+              })}
           </GraphBox>
         </GraphContainer>
         <BarContainer>
           <BarBox>
-            {periodArr &&
-              periodArr.map((el, idx) => {
+            {startDate &&
+              startDate.map((el, idx) => {
                 return (
                   <Bar key={idx}>
-                    <BarWhite
-                      height={el[0]}
-                      className="sc-dIUeWJ bWnaiA"
-                    ></BarWhite>
-                    <BarBlack height={el[1]} className="sc-hHfuMS NKEfY">
+                    <BarWhite height={el[0]}></BarWhite>
+                    <BarBlack height={el[1]}>
                       <BarDay>
-                        <BarSpan>4일</BarSpan>
+                        <BarSpan>{el[2]}일</BarSpan>
                       </BarDay>
                     </BarBlack>
                     <BarMonth>
-                      <MonthSpan className="sc-bBXrwG fwrojZ">12/16</MonthSpan>
+                      <MonthSpan>{el[3]}</MonthSpan>
                     </BarMonth>
                   </Bar>
                 );
