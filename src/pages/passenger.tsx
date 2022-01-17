@@ -20,16 +20,13 @@ const Passenger = () => {
   const [page, setPage] = useState<number>(1);
   const { loading, list } = useFetch(page);
   const loader = useRef(null);
-  //console.log("list", list, "loader", loader);
 
   const handleObserver = useCallback((entries) => {
     //관찰대상
     const target = entries[0];
-    //console.log("target", target);
     //isIntersecting: 관찰 대상의 교차 상태(Boolean)
     if (target.isIntersecting) {
       setPage((prev) => prev + 1);
-      //console.log("page", page);
     }
   }, []);
 
@@ -37,16 +34,17 @@ const Passenger = () => {
     const option: ObserverProps = {
       root: null,
       rootMargin: "20px",
-      threshold: 0,
+      threshold: 1,
     };
     //callbackFunc - handleObserver entries 배열인자를 받는다.
     const observer = new IntersectionObserver(handleObserver, option);
     if (loader.current) observer.observe(loader.current);
+    return () => observer.disconnect();
   }, [handleObserver]);
 
   return (
     <PassengerContainer>
-      <h2>passenger</h2>
+      <h2>Passenger List</h2>
       <PassengerBox>
         {list &&
           list?.map((list: Response, idx: number) => {

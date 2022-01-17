@@ -7,13 +7,18 @@ export const GlobalStyle = createGlobalStyle`
       box-sizing: border-box;
   }
   body{
-
+    alink:red
   }
   a{
-      color:-webkit-link;
-      text-decoration: underline;
-      cursor: pointer;
+    text-decoration: underline;
+    color:-webkit-link;
+    cursor: pointer;
+    
   }
+  a:active{
+      color: red;
+    }
+ 
  h2{
   display: block;
     font-size: 1.5em;

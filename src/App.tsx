@@ -1,6 +1,6 @@
 import "./App.css";
 import { GlobalStyle } from "styles/GlobalStyle";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Main from "./pages/main";
 import Report from "./pages/report";
@@ -11,7 +11,6 @@ function App() {
     <div className="App">
       <GlobalStyle />
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/report" element={<Report />} />
